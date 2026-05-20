@@ -41,8 +41,27 @@ INSTRUCTOR_DELAY="${INSTRUCTOR_DELAY:-0.020}"
 WIKI_HOLD="${WIKI_HOLD:-6}"
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WIKI_DIR="${WIKI_DIR:-$script_dir/../../../../wiki/microelectronics-tutor-demo.wiki}"
-WIKI_URL_BASE="${WIKI_URL_BASE:-https://github.com/chrissweet/microelectronics-tutor-demo/wiki}"
+
+# Auto-discover the wiki location and URL from the repo's git structure,
+# so this script works in any course-tutor project without hardcoded paths.
+# Override either via env var if the auto-detection finds the wrong thing.
+auto_wiki_dir() {
+  local repo_root candidate
+  repo_root=$(git -C "$script_dir" rev-parse --show-toplevel 2>/dev/null) || return 1
+  for candidate in "$repo_root"/wiki/*.wiki; do
+    [[ -d "$candidate" ]] && { printf '%s' "$candidate"; return 0; }
+  done
+  return 1
+}
+
+auto_wiki_url() {
+  local wiki="$1"
+  [[ -d "$wiki" ]] || return 1
+  git -C "$wiki" remote get-url origin 2>/dev/null | sed -E 's|\.git$||'
+}
+
+WIKI_DIR="${WIKI_DIR:-$(auto_wiki_dir || true)}"
+WIKI_URL_BASE="${WIKI_URL_BASE:-$(auto_wiki_url "$WIKI_DIR" || true)}"
 
 C_RESET=$'\033[0m'
 C_DIM=$'\033[2m'

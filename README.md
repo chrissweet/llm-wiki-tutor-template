@@ -9,7 +9,23 @@ A template repository for building a **course-aware AI tutor** on top of the [ll
 
 **Worked example:** see [microelectronics-tutor-demo](https://github.com/chrissweet/microelectronics-tutor-demo) — the Purdue SCALE *Introduction to Engineering with Microelectronics* curriculum, instantiated against this template's pattern, with rendered demo videos.
 
-**Status of the tutor layer:** the prompt, launcher, and capture pipeline have been validated end-to-end on the microelectronics demo. Course-specific content (the prompt's example walkthroughs, the capture scripts' student turn arrays, the wiki page references) is currently still microelectronics-flavored in this template — it must be edited per-course until the parameterization pass lands.
+**Status of the tutor layer:** the prompt, launcher, and capture pipeline have been validated end-to-end on the microelectronics demo.
+
+## What is automatic vs. what you must edit
+
+After clicking *Use this template* and cloning your new repo, the following adapt to your course **automatically** — no edits needed:
+
+- **Wiki location.** `play-dialog.sh` discovers the wiki sub-repository at `wiki/*.wiki/` from your repo's git structure.
+- **Wiki URL.** The GitHub URL used for inline hyperlinks is derived from the wiki sub-repo's `origin` remote at runtime. As long as you've pushed the wiki, links resolve.
+- **Course identity.** The tutor prompt no longer hardcodes a course name; it tells Claude to read the wiki's Home and Index pages at session start to orient itself.
+- **Concept page list.** The tutor reads `index_*.md` in the wiki to discover concept pages — no static list to maintain in the prompt.
+
+What you **must** edit (course content the template cannot infer):
+
+- **The wiki itself.** Populate `wiki/<repo>.wiki/` with your course's concept pages, source summaries, and troubleshooting / common-mistakes content. The tutor will read whatever's there.
+- **Capture-script student turns.** `bin/capture-real-tutor.sh` and `bin/capture-two-agent-tutor.sh` contain hardcoded student-turn arrays from the microelectronics demo. Replace them with prompts that fit your course's representative lab / problem / scenario before you record.
+- **The student persona** in `bin/capture-two-agent-tutor.sh` is currently described as "intro microelectronics undergrad with shaky Ohm's-law knowledge." Generalize to whatever student your course actually targets.
+- **The demo dialog and tape files** in `docs/demo/scenarios/` contain the microelectronics worked example. Keep them as a reference or replace per-course.
 
 ---
 
