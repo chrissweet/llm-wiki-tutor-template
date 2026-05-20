@@ -1,4 +1,19 @@
-# llm-wiki-memory-template
+# llm-wiki-tutor-template
+
+A template repository for building a **course-aware AI tutor** on top of the [llm-wiki pattern](https://github.com/tobi/llm-wiki). Forked from [crcresearch/llm-wiki-memory-template](https://github.com/crcresearch/llm-wiki-memory-template); inherits its wiki-as-memory infrastructure and adds:
+
+- A Socratic-tutor system prompt (`bin/lib/tutor-prompt.md`) that quotes wiki content in prose, never delivers complete solutions, and walks multi-step problems one substep per turn.
+- A one-command tutor launcher (`bin/tutor.sh`) that wraps `claude` with the tutor prompt and the course wiki in scope.
+- A demo-capture pipeline (`bin/capture-*.sh`, `docs/demo/scenarios/lib/play-dialog.sh`, VHS tape boilerplate) for recording terminal-rendered tutor sessions as MP4s with inline-hyperlinked wiki references.
+- A "Course tutor mode" section in `CLAUDE.md.template` so a fresh `claude` session in the directory recognizes the student/teacher context automatically.
+
+**Worked example:** see [microelectronics-tutor-demo](https://github.com/chrissweet/microelectronics-tutor-demo) — the Purdue SCALE *Introduction to Engineering with Microelectronics* curriculum, instantiated against this template's pattern, with rendered demo videos.
+
+**Status of the tutor layer:** the prompt, launcher, and capture pipeline have been validated end-to-end on the microelectronics demo. Course-specific content (the prompt's example walkthroughs, the capture scripts' student turn arrays, the wiki page references) is currently still microelectronics-flavored in this template — it must be edited per-course until the parameterization pass lands.
+
+---
+
+# Inherited base: llm-wiki-memory-template
 
 A template repository for the [llm-wiki pattern](https://github.com/tobi/llm-wiki), with optional overlays for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [Cursor](https://docs.cursor.com/). The llm-wiki layer is agent-agnostic, so the same template also works in minimal mode for OpenCode, Pi, OpenInterpreter, or any agent you write yourself.
 

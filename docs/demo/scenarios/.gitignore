@@ -1,0 +1,4 @@
+# VHS-rendered video output — regenerate with `vhs *.tape`
+*.mp4
+*.gif
+*.webm

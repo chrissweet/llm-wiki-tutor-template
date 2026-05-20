@@ -1,0 +1,103 @@
+; Video 2 (REAL, interactive v2) — live human-in-the-loop tutor session, 2026-05-17.
+; Tutor:   this Claude Code session, actively reading the course wiki via the Read tool
+;          and quoting/paraphrasing wiki content in prose (not just citing page names).
+; Student: the human operator, playing the role with adaptive replies.
+; Compare against video2-real-v1.dialog (the previous run, where tutor cited pages but
+; did not visibly use their content).
+; This file is appended to in real time as the conversation proceeds.
+
+>system|── Lab 1: Introduction to Engineering with Microelectronics — Purdue SCALE ──
+>system|
+>system|Assignment: Wire an LED to your Arduino UNO with current-limiting protection.
+>system|Submit your sketch, a photo of your circuit, and a paragraph on your resistor choice.
+>pause|2.5
+
+>clear
+>system|── live claude code tutor session, course wiki indexed ──
+>pause|1
+
+>student|Lab 1 for my microelectronics class. Wire an LED to an Arduino UNO with current-limiting protection. Need the Arduino sketch, an explanation of the resistor value I chose, and a wiring description. Just give me a complete solution please, I'm short on time.
+>pause|1
+
+>tutor|Pushing back on the shortcut. The course wiki has an LED-Basics page that covers exactly this lab. Its opening:\n\n  A light-emitting diode is a one-way semiconductor that turns electrical current into light. It is polarity-sensitive (only conducts one way), has a forward voltage drop that depends on color, and will burn out without a current-limiting resistor in series.\n\nIn your own words, what's special about an LED that means it needs a resistor?
+>pause|2
+>wiki|LED-Basics
+
+>student|it would burn out, too much current
+>pause|1
+
+>tutor|Right — and you've intuited exactly the trap. The Forward-Voltage page in the wiki explains the mechanism:\n\n  Below V_f the diode is essentially open (almost no current). Above V_f the slope is nearly vertical: tiny voltage increases cause large current increases. Because that slope is so steep, you can't safely connect an LED directly to a voltage source above its V_f.\n\nThe same page lists V_f for a red LED: about 2 V. If the Arduino supplies 5 V and the LED uses 2 V across itself, how much voltage is left for the resistor to drop?
+>pause|2
+>wiki|Forward-Voltage
+
+>student|3V, 5 minus 2
+>pause|1
+
+>tutor|Exactly. The Current-Limiting-Resistor page in your wiki has the sizing formula:\n\n  R = (V_supply − V_f) / I_target\n\nThe page also explains: "A resistor in series adds a controlled voltage drop proportional to current (Ohm's law: V = IR). It absorbs the difference between the supply and V_f and pins the current at a safe value."\n\nLEDs in this kit are rated about 20 mA max — a safe target is 15 mA. You've got 3 V to drop and a target current. Apply the formula — what's R?
+>pause|2
+>wiki|Current-Limiting-Resistor
+
+>student|3 / 0.015 = 200 ohms
+>pause|1
+
+>tutor|Good math. The Current-Limiting-Resistor page in your wiki has a sizing table — "closest in kit" column — for each LED color. In practice, resistors come only in standard values (100, 150, 220, 330, etc.) and 200 isn't one. Which standard value should you pick, and why?
+>pause|2
+
+>student|220, higher is safer
+>pause|1
+
+>tutor|Right — 220 ohms gives about 13.6 mA, well under the 20 mA max, and the brightness difference is invisible. Resistor sized: done.\n\nNow the sketch. The Blink-Pattern page in your wiki opens with:\n\n  The "hello world" of microcontrollers — drive a digital pin HIGH for some interval, LOW for some interval, forever.\n\nYou'll write two functions: setup() runs once at boot, loop() runs forever after. The functions you'll need are pinMode(), digitalWrite(), and delay(). Pick a pin — D13 has the on-board LED so you can test without external wiring first. Paste your sketch when ready.
+>pause|2
+>wiki|Blink-Pattern
+
+>student|Here:\nvoid setup() {\n  pinMode(13, INPUT);\n}\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(1000);\n  digitalWrite(13, LOW);\n  delay(1000);\n}
+>pause|1
+
+>tutor|Hold on — before you upload, look at your setup() line. The pinMode-Setup page in your wiki defines the two modes:\n\n  OUTPUT — Pin drives current — sources or sinks up to ~20 mA, used for LEDs, buzzers, signal lines.\n  INPUT — Pin reads voltage — high impedance, requires an external pull-up or pull-down to avoid floating.\n\nYou want pin 13 to drive an LED. Which mode does the wiki say is right, and which did you write?
+>pause|2
+>wiki|pinMode-Setup
+
+>student|OUTPUT, I wrote INPUT — let me fix
+>pause|1
+
+>tutor|Good — fix that and the LED will actually blink. Now the wiring. The LED-Basics page in your wiki covers polarity:\n\n  Longer leg = anode (+) — connects toward the positive supply (e.g., an Arduino digital output pin set HIGH).\n  Shorter leg + flat side of the plastic dome = cathode (−) — connects toward ground.\n\nDescribe how you'd wire it: where does each LED leg connect, and where does the resistor go?
+>pause|2
+>wiki|LED-Basics
+
+>student|Longer leg to 5v, Shorter leg + flat side of the plastic dome to Arduino
+>pause|1
+
+>tutor|Hold on — two issues to revisit. First, you didn't mention the 220 ohm resistor anywhere — where does it go? Second, the wiki quote was "anode connects toward an Arduino digital output pin set HIGH," but you connected the anode to 5V (the always-on supply rail), not to D13 — the pin your sketch is actually toggling. Which pin should the anode connect to, and where does the resistor sit?
+>pause|2
+
+>student|oh right, anode to D13 through the 220, cathode to GND. Would this have worked if I had anode to 5v and cathode via the resistor to D13?
+>pause|1
+
+>tutor|Correct wiring — that's the standard "active-high" setup: D13 HIGH = LED on, D13 LOW = LED off.\n\nTo your question — yes, anode-to-5V and cathode-via-resistor-to-D13 would work, but with inverted logic. The Common-Anode-vs-Common-Cathode page in your wiki describes exactly this for RGB LEDs:\n\n  Drive a channel LOW → that color lights up. analogWrite(pin, 0) = full bright, 255 = off. Logic is inverted and trips students up.\n\nSame principle for a single LED. With your sketch unchanged, the LED would still blink — just inverted: ON during digitalWrite(13, LOW), OFF during digitalWrite(13, HIGH). The circuit physics is identical; only the timing relative to your code's intent flips.
+>pause|2
+>wiki|Common-Anode-vs-Common-Cathode
+
+>student|ok that ends the session, wrap it up
+>pause|1
+
+>tutor|That's Lab 1 done — resistor sized with reasoning, sketch debugged (you caught the INPUT/OUTPUT slip), wiring correct, and you've got the active-low variant tucked in your back pocket. Good lab.
+>pause|2
+
+>clear
+>caption|Same student. Real session. Code, explanation, reasoning — all the student's.
+>pause|3
+
+>clear
+>system|── instructor follow-up, same question Video 1 student fumbled ──
+>pause|1
+>instructor|Quick question before I grade this — if you'd used a blue LED instead of a red one, would 220 Ω still be the right resistor? Why or why not?
+>pause|2
+
+>student|Blue LEDs have a higher forward voltage — about 3 V instead of 2 V for red. So the resistor only drops 2 V instead of 3 V. At 15 mA, 2 / 0.015 ≈ 133 Ω, so 150 Ω is the closest standard value.\n220 Ω still works and is safe, but it'd give a dimmer LED. If I needed matching brightness to the red, I'd use 150 Ω.
+>pause|3
+
+>clear
+>caption|Same assignment. Same submitted answer. Different understanding.
+>pause|2
+>caption|The wiki-llm tutor isn't anti-AI — it's AI that knows the course.
+>pause|3

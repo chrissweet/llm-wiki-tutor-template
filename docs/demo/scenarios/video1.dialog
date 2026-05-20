@@ -1,0 +1,57 @@
+; Video 1 — The Shortcut. ~90 seconds total runtime.
+; Generic LLM, no project context. Student outsources, submits, fumbles diagnostic.
+; Source: docs/demo/scenarios/video1.md
+
+>system|── Lab 1: Introduction to Engineering with Microelectronics — Purdue SCALE ──
+>system|
+>system|Assignment: Wire an LED to your Arduino UNO with current-limiting protection.
+>system|Submit your sketch, a photo of your circuit, and a one-paragraph explanation
+>system|of how you chose your resistor value.
+>pause|2.5
+
+>clear
+>system|── chat session: generic assistant, no project context ──
+>pause|1
+
+>student|Lab 1 for my microelectronics class. Wire an LED to an Arduino UNO with current-limiting protection. Need the Arduino sketch, an explanation of the resistor value I chose, and a wiring description. Just give me a complete solution please, I'm short on time.
+>pause|1
+
+>assistant|Here is a complete solution for Lab 1.
+>pause|0.5
+>assistant|Arduino sketch:
+>code|void setup() {
+>code|  pinMode(13, OUTPUT);
+>code|}
+>code|void loop() {
+>code|  digitalWrite(13, HIGH);
+>code|  delay(1000);
+>code|  digitalWrite(13, LOW);
+>code|  delay(1000);
+>code|}
+>pause|0.5
+>assistant|Wiring: Connect the LED's long leg (anode) through a 220Ω resistor to pin 13. Connect the short leg (cathode) to GND.
+>pause|0.5
+>assistant|Resistor choice: Using Ohm's law (V = IR), with the LED's forward voltage of ~2 V and a target current of ~15 mA, R = (5 − 2) / 0.015 ≈ 200 Ω. A 220 Ω resistor is a safe, common choice.
+>pause|2
+
+>caption|Student selects all → copies → pastes into assignment template → submits.
+>pause|2
+>caption|Total time invested: about 90 seconds.
+>pause|2
+
+>clear
+>system|── instructor follow-up, 10 minutes later ──
+>pause|1
+>instructor|Quick question before I grade this — if you'd used a blue LED instead of a red one, would 220 Ω still be the right resistor? Why or why not?
+>pause|3
+
+>student|Um.
+>pause|2
+>student|Yes I think so, it's the standard value for LEDs. Ohm's law works the same way.
+>pause|3
+
+>clear
+>caption|Assignment: submitted. Resistor: correct. Understanding of *why*: absent.
+>pause|2
+>caption|Same assignment, with the wiki-llm tutor →
+>pause|3
