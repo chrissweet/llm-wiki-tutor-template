@@ -27,6 +27,35 @@ What you **must** edit (course content the template cannot infer):
 - **The student persona** in `bin/capture-two-agent-tutor.sh` is currently described as "intro microelectronics undergrad with shaky Ohm's-law knowledge." Generalize to whatever student your course actually targets.
 - **The demo dialog and tape files** in `docs/demo/scenarios/` contain the microelectronics worked example. Keep them as a reference or replace per-course.
 
+## What makes a good course tutor demo: known stumbling blocks
+
+The single most pedagogically powerful moment in a tutor demo is the tutor catching a real student mistake and walking the student to the wiki page that explains it. Without this beat, the demo flattens to *"tutor confirms the student got things right"* — true but undemonstrative.
+
+The pattern that produces this moment is **mistake planting**: the two-agent capture (`bin/capture-two-agent-tutor.sh`) drives the student side with a persona prompt that reads the course wiki at session start, catalogs known student mistakes from the wiki's troubleshooting content, and plants ONE of them naturally during the recording. The tutor then catches it via wiki citation — a real teaching moment, generated deterministically from the wiki's troubleshooting catalog.
+
+This makes the *wiki's troubleshooting content* the load-bearing input to a sharp demo. A course tutor instantiated against a wiki with no documented student mistakes will produce sessions that are structurally correct but pedagogically flat. A course tutor instantiated against a wiki with rich troubleshooting documentation will produce sessions that demonstrate the wiki-llm pattern's value clearly.
+
+### What the wiki should contain
+
+The student persona looks for two shapes of content:
+
+- A dedicated page named **Troubleshooting**, **Common-Mistakes**, or **FAQ** listing known student mistakes with brief explanations.
+- Sub-sections within concept pages titled **"Common mistakes"**, **"Common gotchas"**, or **"The bug from the troubleshooting Q&A"** — listing the failure modes specific to that concept.
+
+Both shapes work; the persona's wiki search picks up either. The microelectronics worked example uses both: a `Source-Curriculum-Plan` page that summarizes the curriculum's troubleshooting Q&A verbatim from the source PDF, plus per-concept "Common mistakes" sub-sections (e.g., `pinMode-Setup` has one).
+
+### Where to source the content
+
+Three good sources, in rough order of usefulness:
+
+- **The curriculum's own troubleshooting documentation.** Most well-designed curricula include some form of FAQ, instructor-notes block, or known-stumbling-block list — that material is gold. Ingest via `/wiki-source` against the curriculum source.
+- **Instructor notes on recurring student questions.** Office-hours follow-ups, recurring exam-feedback themes, the same mistake five students made on a lab. Often unwritten — worth capturing once into the wiki.
+- **Post-mortem notes from your own demo dry runs.** If a planned demo dialog feels flat, the missing piece is usually a stumbling block the wiki doesn't yet document. Add it and re-run.
+
+### Full pattern documentation
+
+The implementation details — how the student persona searches the wiki, plants the mistake, acknowledges the correction; how the tutor catches it; the failure modes observed in earlier captures *without* mistake-planting — are documented in [Mistake-Planting](https://github.com/chrissweet/llm-wiki-tutor-template/wiki/Mistake-Planting) in this template's wiki. See also [Course-Tutor-Pattern](https://github.com/chrissweet/llm-wiki-tutor-template/wiki/Course-Tutor-Pattern) for the six load-bearing rules of the Socratic prompt the tutor side runs against.
+
 ---
 
 # Inherited base: llm-wiki-memory-template
